@@ -1,6 +1,7 @@
 package com.example.bank_service.controller;
 
 import com.example.bank_service.service.BankService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import model.TransferBalance;
@@ -16,10 +17,16 @@ public class BalanceController {
 
 
 
-    @GetMapping("/{accountId}")
+    @GetMapping("/{{accountId}}")
     public BigDecimal getBalance(@PathVariable Long accountId) {
         return bankService.getBalance(accountId);
 
+
+//        TransferBalance transferBalance = new ObjectMapper().readValue("{\n" +
+//                "\"from\":2,\n" +
+//                "\"to\":3,\n" +
+//                "\"amount\":300\n" +
+//                "}", TransferBalance.class);
 
     }
 

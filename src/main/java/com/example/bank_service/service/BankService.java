@@ -22,8 +22,15 @@ public class BankService {
     }
 
     public BigDecimal addMoney(Long to, BigDecimal amount) {
-        BigDecimal save = balanceRepository.save(to, amount);
-        return save;
+        BigDecimal currentBalance = balanceRepository.getBalanceForId(to);
+        if (currentBalance == null) {
+             balanceRepository.save(to,amount);
+            return amount;
+        } else {
+            final BigDecimal updated = currentBalance.add(amount);
+            balanceRepository.save(to, updated);
+            return updated;
+        }
     }
 
     public void makeTransfer(TransferBalance transferBalance) {
@@ -33,7 +40,7 @@ public class BankService {
         if(transferBalance.getAmount().compareTo(fromBalance) > 0) throw new IllegalArgumentException("No money");
         BigDecimal updateFromBalance = fromBalance.subtract(transferBalance.getAmount());
         BigDecimal updateToBalance = toBalance.add(transferBalance.getAmount());
-
-
+        balanceRepository.save(transferBalance.getFrom(), updateFromBalance);
+        balanceRepository.save(transferBalance.getTo(), updateToBalance);
     }
 }
